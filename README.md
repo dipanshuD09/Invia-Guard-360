@@ -21,4 +21,4 @@ Welcome to **Invia Guard 360**! This project is a part of corporate training ass
 2. Unit-of-Work Design Patter: Acts as an extra layer of abstraction or a Firewall between Repositories & the Database.
 3. Implementation of SOLID Principles: Successfully implemented principles such as Open Close principle, Single responsibility principle, Interface Segregation Principle & Dependency Injection.
 4. Loose Coupling & Seperation of Concern: Included the Repositories and Models in the project as class libraries by giving reference to achieve loose coupling.
-5. Constructor Dependency Injection: Not allocating the memory of repositories repeatedly in the contoller, rather using builder to allocate the memory for us thus achieving the Single responsibility principle. 
+5. Constructor Dependency Injection: Not allocating the memory of repositories repeatedly in the controller, rather using builder to allocate the memory for us thus achieving the Single responsibility principle. 
