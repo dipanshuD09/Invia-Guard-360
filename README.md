@@ -1,37 +1,24 @@
-# Invia Connect
+# Invia Guard 360
 
-Connect and Collaborate - Your Assignment Project
 
 ## Table of Contents
 
 - [About](#about)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Usage](#usage)
-- [Contributors](#contributors)
+- [Demo](#demo)
+
+- [Features](#features)
 - [License](#license)
 
 ## About
 
-Welcome to **Invia Connect**! This project is part of our corporate training assignment, aiming to [briefly describe what your project does and why it's valuable in the context of your training].
+Welcome to **Invia Guard 360**! This project is a part of corporate training assignment at Invia, aiming to provide its users an enhanced analysis of their domains and subdomains with the help of a interactive dashboard.
 
-## Getting Started
+### Demo
 
-These instructions will help you get started with the project.
+### Features
 
-### Prerequisites
-
-Before you begin, ensure you have met the following requirements:
-
-- [List any prerequisites or dependencies that users need to have installed]
-- [You can also include links to installation instructions if necessary]
-
-### Installation
-
-Follow these steps to get your project up and running:
-
-1. [Step 1: Explain the first installation step with code snippets]
-   ```bash
-   # Example command or code
-   your-command-here
+1. Role-Based-Access: There are 2 roles Customer & Admin. Customers can view their profile and domains dashboard whereas Admins can add, edit, disable, delete user info.
+2. Unit-of-Work Design Patter: Acts as an extra layer of abstraction or a Firewall between Repositories & the Database.
+3. Implementation of SOLID Principles: Successfully implemented principles such as Open Close principle, Single responsibility principle, Interface Segregation Principle & Dependency Injection.
+4. Loose Coupling & Seperation of Concern: Included the Repositories and Models in the project as class libraries by giving reference to achieve loose coupling.
+5. Constructor Dependency Injection: Not allocating the memory of repositories repeatedly in the contoller, rather using builder to allocate the memory for us thus achieving the Single responsibility principle. 
