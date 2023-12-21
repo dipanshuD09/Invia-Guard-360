@@ -5,7 +5,7 @@
 
 - [About](#about)
 - [Demo](#demo)
-
+- [Project Aspects](#projectaspects)
 - [Features](#features)
 - [License](#license)
 
@@ -14,6 +14,14 @@
 Welcome to **Invia Guard 360**! This project is a part of corporate training assignment at Invia, aiming to provide its users an enhanced analysis of their domains and subdomains with the help of a interactive dashboard.
 
 ### Demo
+
+### Project Aspects
+
+1. .Net core MVC
+2. SQL(Stored Procedures, Functions & Scheduled Tasks)
+3. Jquery AJAX (To GET POST data)
+4. Bootstrap
+5. Chart.js
 
 ### Features
 
