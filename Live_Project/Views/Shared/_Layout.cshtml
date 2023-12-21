@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Invia Connect</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="Favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="Favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="Favicon/favicon-16x16.png">
+    <link rel="manifest" href="Favicon/site.webmanifest">
+    <link rel="mask-icon" href="Favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#ffc40d">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+    <link rel="preconnect" href = "https://fonts.googleapis.com" >
+    <link rel="preconnect" href = "https://fonts.gstatic.com" crossorigin >
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel = "stylesheet" />
+   <style>
+        @await RenderSectionAsync("Styles", required: false)
+   </style>
+</head>
+<body>
+    <div class="h-25 pt-2 px-4 d-flex justify-content-between" id="navbar">
+       <a href='/' class="text-decoration-none text-black">
+      <div class="d-flex position-reltive">
+       <h3 class="pe-auto user-select-none d-flex flex-column" style="font-weight:700">Invia<span class="mx-2">Guard</span></h3>
+       <h3 class="logo-font fw-bold position-absolute user-select-none"
+       style="font-size:2.5rem;color:mediumorchid;left:6rem;top:-1px; transform: rotate(deg);">
+       360
+       </h3>
+      </div>
+       </a>
+        @if (@Context.Request.HttpContext.Session.GetString("usr") != null 
+        && @ViewContext?.RouteData?.Values["controller"]?.ToString() != "Login")
+    {
+    <div class="UserContainer">
+  <div class="navigation">
+    <div class="user-box">
+      <div class="image-box">
+        <img src="/Images/man.png" width="32" height="32" alt="avatar">
+      </div>
+     <p class="username text-muted">@@@Context.Request.HttpContext.Session.GetString("usr")</p>
+    </div>
+    <div class="menu-toggle"></div>
+    <ul class="menu">
+  <li class="my-2 fw-semibold">Home</li>
+  <li class="my-2 fw-semibold">Setting</li>
+  <li class="my-2 fw-semibold">Profile</li>
+  <li class="my-2 fw-semibold">Help</li>
+  <li class="my-2 fw-semibold"><a href="/Login/UserSignOut">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+  <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+</svg>
+  Logout
+  </a></li>
+  </ul>
+</div>
+</div>
+    }
+    </div>
+    @if(!string.IsNullOrEmpty(ViewBag.Message))
+{
+    await Html.RenderPartialAsync("_ToastPartial");
+}
+
+    <div class="">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+ <div class="container-fluid">
+  <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 border-top">
+    <p class="col-md-4 mb-0 text-body-secondary">© 2023 Company, Inc</p>
+
+    <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+      <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+    </a>
+  </footer>
+</div> 
+
+
+    <script src="https://kit.fontawesome.com/98be6b739e.js" crossorigin="anonymous"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script> 
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await Component.InvokeAsync("Notyf") 
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,541 @@
+﻿@model LP.Models.ViewModels.CustomerDetailsVM
+
+@{
+    ViewData["Title"] = "Customer Details";
+    string fullName = (Model.First_Name + " " + Model.Last_Name).ToUpper();
+}
+
+
+<header class="navbar user-select-none d-flex justify-content-between align-content-center  bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
+    <a class="navbar-brand col-md-3 col-lg-2 click me-0 px-3 fs-6 text-white" href="#">Company:  @Model.Organization</a>
+    <p class="fs-6 user-select-none me-3 my-2 text-white">User: @fullName</p>
+</header>
+
+<div class="container-xl">
+
+    <div class="d-flex gap-5">
+        <div class="container my-5 d-flex align-content-center justify-content-center">
+            <h3 id="progressChart"></h3>
+        </div>
+        <div class="container my-5 d-flex align-content-center justify-content-center">
+            <h2 id="PlanValidity"></h2>
+        </div>
+    </div>
+
+    <form class="mb-5" asp-controller="Dashboard" asp-action="UpdateCustomer">
+        <div class="row mt-3 mb-2">
+            <div class="col-2">
+                <label asp-for="@Model.Id" class="">Customer ID</label>
+                <input type="text" id="customer-id" class="bg-white-50 form-control" name="Id" value=@Model.Id readonly />
+
+            </div>
+            <div class="col-5">
+                <label asp-for="@Model.First_Name" class="">First Name</label>
+                <input type="text" class="bg-white-50 admin-editable" name="First_Name" read value="@Model.First_Name" readonly />
+            </div>
+            <div class="col-5">
+                <label asp-for="@Model.Last_Name" class="">Last Name</label>
+                <input type="text" class="bg-white-50 admin-editable" name="Last_Name" read value="@Model.Last_Name" readonly />
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <label asp-for="@Model.Email" class="">Email</label>
+                <input type="text" class="bg-white-50 admin-editable" name="Email" value="@Model.Email" readonly />
+
+            </div>
+            <div class="col-6">
+                <label asp-for="@Model.City" class="">City</label>
+                <input type="text" class="bg-white-50 admin-editable" name="City" value="@Model.City" readonly />
+            </div>
+        </div>
+        <div class="row my-2">
+            <div class="col-6">
+                <label asp-for="@Model.Address" class="">Address</label>
+                <input type="text" class="bg-white-50 admin-editable" name="Address" rows="1" value="@Model.Address" readonly/>
+
+            </div>
+            <div class="col-6">
+                <label asp-for="@Model.Organization" class="">Organization</label>
+                <input type="text" class="bg-white-50 admin-editable" name="Organization" rows="1" value=" @Model.Organization" readonly />
+            </div> 
+        </div>
+        <div class="row my-2">
+            <div class="form-group col-6">
+                <label asp-for="Plan_Name"></label>
+                <select asp-for="Plan_Name" id="CurrentPlan" asp-items="Html.GetEnumSelectList<LP.Models.PlanType>()" class="admin-editable form-control" disabled>
+                    <option value="">@Model.Plan_Name</option>
+                </select>
+                <span asp-validation-for="Plan_Name" class="text-danger"></span>
+            </div>
+
+            <div class="col-3">
+                <label asp-for="@Model.Plan_Start" class="">Plan Start</label>
+                <input type="text" class="bg-white-50" name="Plan_Start" value=@Model.Plan_Start.ToString("MM/dd/yyyy") readonly />
+            </div>
+            <div class="col-3">
+                <label asp-for="@Model.Plan_End" class="">Plan End</label>
+                <input type="text" class="bg-white-50" name="Plan_End" value=@Model.Plan_End.ToString("MM/dd/yyyy") readonly />
+            </div>
+        </div>
+        <input type="text" class="bg-white-50 d-none" name="PlanId" value=@Model.PlanId readonly />
+        <input type="text" class="bg-white-50 d-none" name="Current_Round" value=@Model.Current_Round readonly />
+
+        <button class="btn btn-success Admin-only-Containers d-none" id="save-details" type="submit">Save Details</button>
+    </form>
+        <button class="btn btn-danger" id="security-dashboard-btn">Security Dashboard</button>
+        <button class="btn btn-warning Admin-only-Containers d-none" id="update-round">Update Round</button>
+
+    <div class="container mb-5">
+        <h2 class="my-4">Transactions</h2>
+        <div class="d-flex align-items-center justify-content-center row">
+            <div class="col-4" style="border:2px solid grey"></div>
+            <button class="btn col-2 btn-outline-secondary" id="showButton">Show All Transactions</button>
+            <div class="col-4" style="border:2px solid grey"></div>
+        </div>
+        <table class="table table-striped user-select-none hidden-table" id="transactionTable">
+            <thead>
+                <tr>
+                    <th>Transaction Id</th>
+                    <th>Plan Name</th>
+                    <th>Plan Start</th>
+                    <th>Plan End</th>
+                </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+        </table>
+    </div>
+</div>
+
+<div id="partialContainer" class="Customer-only-Containers d-none">
+    <partial name="_MessageAdminModel">
+</div>
+
+
+<div class="d-none Customer-only-Containers">
+    <div class="pricing-header p-5 pb-md-4 mx-auto bg-dark text-center my-5" style="color:mediumslateblue">
+        <h1 class="display-4 fw-bold text-body-emphasis">Pricing</h1>
+        <p class="fs-5 text-body-secondary">
+            "Discover affordable pricing plans tailored to your budget and requirements,
+            ensuring you get the best value for your investment."
+        </p>
+    </div>
+
+    <div class="MyContainer container-xxl px-5">
+        <div class="row row-cols-1 row-cols-md-3 mb-3 text-center py-2">
+            <div class="col">
+                <div class="card mb-4 rounded-3  MyCard shadow-sm">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 h3 heading">Basic Plan</h4>
+                    </div>
+                    <div class="card-body  d-flex flex-column justify-content-between">
+                        <h1 class="card-title pricing-card-title">$19.99<small class="text-body-secondary fw-light">/Quarterly</small></h1>
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li class="h5 fw-bolder">10 users included</li>
+                            <li class="h5 fw-bolder">2 GB of storage</li>
+                            <li class="h5 fw-bolder">Email support</li>
+                            <li class="h5 fw-bolder">Help center access</li>
+                        </ul>
+                        <button type="button" class="enquiryBtn w-100 btn btn-lg" style="background-color: gold" data-plan-id="1" disabled>Send Enquiry</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col ">
+                <div class="card mb-4 rounded-3 shadow-sm MyCard">
+                    <div class="card-header py-3">
+                        <h4 class="my-0  h3 heading">Standard Plan</h4>
+                    </div>
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <h1 class="card-title  pricing-card-title">$49.99<small class="text-body-secondary h3 fw-bold">/Semi-Annually</small></h1>
+                        <ul class="list-unstyled">
+                            <li class="h5 fw-bolder">20 users included</li>
+                            <li class="h5 fw-bolder">10 GB of storage</li>
+                            <li class="h5 fw-bolder">Priority email support</li>
+                            <li class="h5 fw-bolder">Help center access</li>
+                        </ul>
+                        <button type="button" class="enquiryBtn w-100 btn btn-lg" style="background-color: gold" data-plan-id="2" disabled>Send Enquiry</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col ">
+                <div class="card mb-4 rounded-3 shadow-sm MyCard" style="border:2px solid gold">
+                    <div class="card-header py-3 text-bg-primary" style="background-color: gold">
+                        <h4 class="my-0  h3 heading">Premium Plan</h4>
+                    </div>
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <h1 class="card-title pricing-card-title">$99.99<small class="text-body-secondary fw-light">/Yearly</small></h1>
+                        <ul class="list-unstyled mt-3 mb-4 d-flex flex-column gap-2">
+                            <li class="h5 fw-bolder">30 users included</li>
+                            <li class="h5 fw-bolder">15 GB of storage</li>
+                            <li class="h5 fw-bolder">Phone and email support</li>
+                            <li class="h5 fw-bolder">Help center access</li>
+                        </ul>
+                        <button type="button" class="enquiryBtn w-100 btn btn-lg" style="background-color: gold" data-plan-id="3" disabled>Send Enquiry</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="display-6 text-center mb-4">Compare plans</h2>
+
+        <div class="table-responsive container">
+            <table class="table text-center table-bordered">
+                <thead>
+                    <tr>
+                        <th style="width: 34%;background-color:purple;color:white">Features</th>
+                        <th style="width: 22%;background-color:purple;color:white">Basic</th>
+                        <th style="width: 22%;background-color:purple;color:white">Standard</th>
+                        <th style="width: 22%;background-color:purple;color:white">Premium</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row" class="text-start">Public</th>
+                        <td>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" style="color:purple" fill=" #8F00FF" class="bi bi-check2-circle" viewBox="0 0 16 16">
+                                <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
+                                <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
+                            </svg>
+                        </td>
+                        <td>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" style="color:purple" fill=" #8F00FF" class="bi bi-check2-circle" viewBox="0 0 16 16">
+                                <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
+                                <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
+                            </svg>
+                        </td>
+                        <td>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" style="color:purple" fill=" #8F00FF" class="bi bi-check2-circle" viewBox="0 0 16 16">
+                                <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
+                                <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
+                            </svg>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-start">Private</th>
+                        <td></td>
+                        <td>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" style="color:purple" fill=" #8F00FF" class="bi bi-check2-circle" viewBox="0 0 16 16">
+                                <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
+                                <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
+                            </svg>
+                        </td>
+                        <td>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" style="color:purple" fill="#8F00FF" class="bi bi-check2-circle" viewBox="0 0 16 16">
+                                <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
+                                <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
+                            </svg>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <tbody>
+                    <tr>
+                        <th scope="row" class="text-start">Permissions</th>
+                        <td>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" style="color:purple" fill=" #8F00FF" class="bi bi-check2-circle" viewBox="0 0 16 16">
+                                <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
+                                <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
+                            </svg>
+                        </td>
+                        <td>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" style="color:purple" fill=" #8F00FF" class="bi bi-check2-circle" viewBox="0 0 16 16">
+                                <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
+                                <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
+                            </svg>
+                        </td>
+                        <td>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" style="color:purple" fill=" #8F00FF" class="bi bi-check2-circle" viewBox="0 0 16 16">
+                                <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
+                                <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
+                            </svg>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-start">Sharing</th>
+                        <td></td>
+                        <td>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" style="color:purple" fill=" #8F00FF" class="bi bi-check2-circle" viewBox="0 0 16 16">
+                                <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
+                                <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
+                            </svg>
+                        </td>
+                        <td>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" style="color:purple" fill=" #8F00FF" class="bi bi-check2-circle" viewBox="0 0 16 16">
+                                <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
+                                <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
+                            </svg>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-start">Unlimited members</th>
+                        <td></td>
+                        <td>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" style="color:purple" fill=" #8F00FF" class="bi bi-check2-circle" viewBox="0 0 16 16">
+                                <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
+                                <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
+                            </svg>
+                        </td>
+                        <td>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" style="color:purple" fill=" #8F00FF" class="bi bi-check2-circle" viewBox="0 0 16 16">
+                                <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
+                                <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
+                            </svg>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-start">Extra security</th>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" style="color:purple" fill=" #8F00FF" class="bi bi-check2-circle" viewBox="0 0 16 16">
+                                <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
+                                <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
+                            </svg>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@section Styles{
+        @@import url('https://fonts.googleapis.com/css2?family=Poltawski+Nowy&display=swap');
+
+    .hidden-table {
+    display: none;
+  }
+
+ .MyCard{
+     min-height:500px;
+ }
+
+ .heading{
+     font-family: 'Anton', sans-serif;
+ }
+
+     .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+          }
+
+      .b-example-divider {
+        width: 100%;
+        height: 3rem;
+        background-color: rgba(0, 0, 0, .1);
+        border: solid rgba(0, 0, 0, .15);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+      }
+
+      .b-example-vr {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 100vh;
+      }
+
+      .bi {
+        vertical-align: -.125em;
+        fill: currentColor;
+      }
+
+      .nav-scroller {
+        position: relative;
+        z-index: 2;
+        height: 2.75rem;
+        overflow-y: hidden;
+      }
+
+      .nav-scroller .nav {
+        display: flex;
+        flex-wrap: nowrap;
+        padding-bottom: 1rem;
+        margin-top: -1px;
+        overflow-x: auto;
+        text-align: center;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .btn-bd-primary {
+        --bd-violet-bg: #712cf9;
+        --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+
+        --bs-btn-font-weight: 600;
+        --bs-btn-color: var(--bs-white);
+        --bs-btn-bg: var(--bd-violet-bg);
+        --bs-btn-border-color: var(--bd-violet-bg);
+        --bs-btn-hover-color: var(--bs-white);
+        --bs-btn-hover-bg: #6528e0;
+        --bs-btn-hover-border-color: #6528e0;
+        --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+        --bs-btn-active-color: var(--bs-btn-hover-color);
+        --bs-btn-active-bg: #5a23c8;
+        --bs-btn-active-border-color: #5a23c8;
+      }
+
+      .bd-mode-toggle {
+        z-index: 1500;
+      }
+
+      .bd-mode-toggle .dropdown-menu .active .bi {
+        display: block !important;
+      }
+
+      .container {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            color: #673AB7;
+            font-weight: 600;
+        }
+
+        select, input[type="text"], input[type="email"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .btn-primary {
+            background-color: #673AB7;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #512DA8;
+        }
+}
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/js/RoundChart.js"></script>
+     <script src="~/js/PlanValidity.js"></script>
+    <script>
+        $(document).ready(function () {
+            var currentPlan = @Model.PlanId;
+            var Id = @Model.Id;
+
+
+            $("#showButton").click(function () {
+                $("#transactionTable").toggleClass("hidden-table");
+            });
+
+            $("#security-dashboard-btn").click(function () {
+                location.replace('/SecurityDashboard');
+            });
+
+
+            $(".enquiryBtn").each(function () {
+                var planId = parseInt($(this).data("plan-id"));
+                if (currentPlan < planId) {
+                    $(this).removeAttr("disabled");
+                }
+            });
+
+            $(".enquiryBtn").click(function () {
+                var newPlan = $(this).data("plan-id");
+                $.ajax({
+                    type: "POST",
+                    url: "/Customer/SendEnquiry",
+                    data: { Id: newPlan, customerId: Id },
+                    success: function (response) {
+                    },
+                });
+            });
+
+            if ('@Context.Request.HttpContext.Session.GetString("UserType")' === 'Customer') {
+                $('.Customer-only-Containers').removeClass("d-none");
+            } else {
+                $('.Admin-only-Containers').removeClass("d-none");
+                $(".admin-editable").each(function () {
+                    $(this).removeAttr("readonly");
+                    $(this).removeAttr("disabled");
+                })
+            }
+
+            $("#update-round").click(function () {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Dashboard/UpdateRound',
+                    data: { Id: Id },
+                    success: function (data) {
+                        setTimeout(() => {
+                            location.reload();
+                        },2500)
+                    },
+                    Error: function (error) {
+
+                    }
+                })
+            });
+
+
+            $.ajax({
+                type: 'GET',
+                url: '/Customer/GetTransactions/' + Id,
+                dataType: 'json',
+                success: function (data) {
+                    var tbody = $('#tbody');
+
+                    $.each(data.data, function (key, transaction) {
+
+                        var planStart = new Date(transaction.plan_Start);
+                        var formattedPlanStart = formatLongDate(planStart);
+                        var formattedPlanStartTime = formatTime(planStart);
+
+                        var planEnd = new Date(transaction.plan_End);
+                        var formattedPlanEnd = formatLongDate(planEnd);
+                        var formattedPlanEndTime = formatTime(planEnd);
+
+                        tbody.append(
+                            '<tr>' +
+                            '<td>' + transaction.transaction_Id + '</td>' +
+                            '<td>' + transaction.plan_Name + '</td>' +
+                            '<td>' + formattedPlanStart + ' ' + formattedPlanStartTime + '</td>' +
+                            '<td>' + formattedPlanEnd + ' ' + formattedPlanEndTime + '</td>' +
+                            '</tr>'
+                        );
+                    });
+                },
+                error: function () {
+                    console.log('Error fetching transactions.');
+                }
+            });
+           
+            function formatLongDate(date) {
+                const options = {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    weekday: 'long',
+                };
+                return new Intl.DateTimeFormat('en-US', options).format(date);
+            }
+
+            function formatTime(date) {
+                const options = {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true,
+                };
+
+                return new Intl.DateTimeFormat('en-US', options).format(date);
+            }
+
+        });
+    </script>
+}

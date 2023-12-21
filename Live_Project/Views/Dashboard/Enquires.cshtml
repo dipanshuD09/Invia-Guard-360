@@ -1,0 +1,99 @@
+﻿@model IEnumerable<LP.Models.ViewModels.CustomerEnquiryViewModel>
+
+@*scroll to top button START*@
+<div class="fixed-bottom">
+    <button id="scrollToTop" class="btn btn-primary">Scroll to Top</button>
+</div>
+@*scroll to top button END*@
+
+<h1>Customer Enquiries</h1>
+<div class="container px-2 py-4">
+    @foreach (var customer in Model)
+    {
+        <div class="container-xl border mb-4 p-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <p class="fw-bold">Name: @customer.CustomerName</p>
+                <p><span class="fw-bold">Email:</span> @customer.CustomerEmail</p>
+            </div>
+            <p><span class="fw-bold">Current Plan:</span> @customer.CurrentPlanName</p>
+            <p><span class="fw-bold">Plan Validity:</span> @customer.PlanValidity</p>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Enquiry Date</th>
+                        <th>Status</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var enquiry in customer.Enquiries)
+                    {
+                        <tr class="@((enquiry.isResolved) ? "" : "bg-danger text-white")">
+                            <td>@enquiry.Enquiry_Date.ToString("d MMMM yyyy")</td>
+                            <td id="status">
+                                @(enquiry.isResolved ? "Resolved" : "Unresolved")
+                            </td>
+                            <td>@enquiry.Message</td>
+                            <td>
+                                @if (!enquiry.isResolved)
+                                {
+                                    <button class="btn btn-warning toggle-status" data-enquiry-id="@enquiry.Id" data-is-resolved="false">Resolved</button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("tr[data-isresolved='False']").addClass("bg-secondary text-white");
+
+            $(".toggle-status").click(function () {
+                var enquiryId = $(this).data("enquiry-id");
+                var isResolved = $(this).data("is-resolved");
+                var toggleButton = $(this);
+                var row = toggleButton.closest("tr"); 
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("EnquiryStatus", "Customer")",
+                    data: { enquiryId: enquiryId, isResolved: isResolved },
+                    success: function (data) {
+                        if (data.success) {
+                            row.removeClass("bg-success").addClass("bg-danger text-white");
+                            row.find("#status").text("Unresolved");
+                            toggleButton.data("is-resolved", false);
+                        }
+                        else {
+                            row.removeClass("bg-danger text-white").addClass("bg-success text-dark");
+                            row.find("#status").text("Resolved");
+                            toggleButton.data("is-resolved", true);
+                        }
+                       setTimeout(() =>{
+                            location.reload();
+                       },3000)
+                    }
+                });
+            });
+
+            $(window).scroll(function () {
+                if ($(this).scrollTop() > 100) {
+                    $('#scrollToTop').fadeIn();
+                } else {
+                    $('#scrollToTop').fadeOut();
+                }
+            });
+
+            $('#scrollToTop').click(function () {
+                $('html, body').animate({ scrollTop: 0 }, 800);
+                return false;
+            });
+        });
+    </script>
+}

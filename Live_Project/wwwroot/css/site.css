@@ -1,0 +1,203 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Freehand&display=swap');
+
+:root {
+    --purple1: #610C9F;
+    --purple2: #940B92;
+    --orange: #F9A66C;
+    --yellow: #F2C76E;
+    --dark-orange: #E32E00;
+    --dark-yellow: #F2C76E;
+    --gray: #555;
+    --purple: #4e65ff;
+    --green-blue: #92effd;
+    --white: #fff;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+
+.btn.btn-primary {
+    background-color: var(--purple2);
+    border-color: var(--purple1);
+}
+
+ .btn.btn-primary:active, .btn.btn-primary.active {
+        background-color: var(--purple1);
+ }
+
+.btn.btn-secondary {
+    background-color: var(--orange);
+    border-color: black;
+}
+
+.btn.btn-secondary:active, .btn.btn-secondary.active {
+    background-color: var(--dark-orange);
+}
+
+.btn.btn-info {
+    background-color: var(--yellow);
+    border-color: black;
+}
+
+
+.btn.btn-info:active, .btn.btn-info.active {
+    background-color: var(--dark-yellow);
+}
+
+
+
+.test {
+    font-family: 'Caveat', cursive;
+}
+
+.logo-font {
+    font-family: 'Freehand', cursive;
+}
+
+
+/*User toggle menu*/
+
+.UserContainer {
+  position:relative;
+  z-index:99;
+  top:-15px;
+  left:15px;
+}
+
+.navigation {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 120px;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 5px;
+    background: white;
+    box-shadow: 0 25px 35px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: height 0.5s, width 0.5s;
+    transition-delay: 0s, 0.75s;
+}
+
+    .navigation .user-box {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        transition: 0.5s;
+        transition-delay: 0.5s;
+    }
+
+        .navigation .user-box .username {
+            font-size: 1.2rem;
+            white-space: nowrap;
+            color: var(--gray);
+        }
+
+        .navigation .user-box .image-box {
+            position: relative;
+            min-width: 60px;
+            height: 60px;
+            background: var(--white);
+            border-radius: 50%;
+            overflow: hidden;
+            border: 10px solid var(--white);
+        }
+
+            .navigation .user-box .image-box img {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+    .navigation .menu-toggle {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+    }
+
+        .navigation .menu-toggle::before {
+            content: "";
+            position: absolute;
+            width: 32px;
+            height: 2px;
+            background: var(--gray);
+            transform: translateY(-10px);
+            box-shadow: 0 10px var(--gray);
+            transition: 0.5s;
+        }
+
+        .navigation .menu-toggle::after {
+            content: "";
+            position: absolute;
+            width: 32px;
+            height: 2px;
+            background: var(--gray);
+            transform: translateY(10px);
+            transition: 0.5s;
+        }
+
+.menu {
+    position: absolute;
+    width: 100%;
+    height: calc(100% - 100px);
+    margin-top: 100px;
+    padding: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+    .menu li {
+        list-style: none;
+    }
+
+        .menu li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+            font-size: 1rem;
+            text-decoration: none;
+            color: var(--gray);
+        }
+
+            .menu li a ion-icon {
+                font-size: 1.5rem;
+            }
+
+            .menu li a:hover {
+                color: var(--purple);
+            }
+
+.navigation.active .menu-toggle::before {
+    transform: translateY(0px) rotate(45deg);
+    box-shadow: none;
+}
+
+.navigation.active .menu-toggle::after {
+    transform: translateY(0px) rotate(-45deg);
+}
+
+.navigation.active {
+    width: 300px;
+    height: 350px;
+    transition: width 0.5s, height 0.5s;
+    transition-delay: 0s, 0.75s;
+}
+
+    .navigation.active .user-box {
+        width: calc(100% - 60px);
+        transition-delay: 0s;
+    }

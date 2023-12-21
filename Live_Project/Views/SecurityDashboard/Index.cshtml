@@ -1,0 +1,372 @@
+﻿@{
+    ViewData["Title"] = "Security Dashboard";
+}
+<div class="d-flex">
+    <div style="width: 50%;" id="threat-status" class="d-flex px-5 justify-content-center align-items-center">
+       <h2 id="threat-info"></h2>
+    </div>
+    <div style="width: 50%; height: 300px; padding:0px 50px">
+        <canvas id="severityChart"></canvas>
+    </div>
+</div>
+
+
+<div class="container mt-5 mb-3">
+    <div class="row">
+        <div class="col-md-4" id="domain-card">
+            <div class="card p-3 mb-2 domain-card">
+                 <div class="d-flex justify-content-between">
+                    <div class="d-flex flex-row align-items-center">
+                        <div class="icon">
+                            <i class="fa-solid fa-house p-2"></i>
+                        </div>
+                        <div class="ms-2 c-details">
+                            <h6 class="mb-0">View</h6>
+                        </div>
+                    </div>
+                    <div class="badge"> <span>1 days ago</span></div>
+                </div>
+                <div class="mt-5">
+                    <h3 class="heading d-flex justify-content-between mx-4"><span>Domain</span> <span id="domain-count" class="fw-bold h2" style="color:red"></span></h3>
+                    <div class="mt-5">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="mt-3"> <span class="text1">32 Tested <span class="text2">of 50 Total</span></span> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3 mb-2 domain-card">
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex flex-row align-items-center">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-browser-edge" viewBox="0 0 16 16">
+                                <path d="M9.482 9.341c-.069.062-.17.153-.17.309 0 .162.107.325.3.456.877.613 2.521.54 2.592.538h.002c.667 0 1.32-.18 1.894-.519A3.838 3.838 0 0 0 16 6.819c.018-1.316-.44-2.218-.666-2.664l-.04-.08C13.963 1.487 11.106 0 8 0A8 8 0 0 0 .473 5.29C1.488 4.048 3.183 3.262 5 3.262c2.83 0 5.01 1.885 5.01 4.797h-.004v.002c0 .338-.168.832-.487 1.244l.006-.006a.594.594 0 0 1-.043.041Z" />
+                                <path d="M.01 7.753a8.137 8.137 0 0 0 .753 3.641 8 8 0 0 0 6.495 4.564 5.21 5.21 0 0 1-.785-.377h-.01l-.12-.075a5.45 5.45 0 0 1-1.56-1.463A5.543 5.543 0 0 1 6.81 5.8l.01-.004.025-.012c.208-.098.62-.292 1.167-.285.129.001.257.012.384.033a4.037 4.037 0 0 0-.993-.698l-.01-.005C6.348 4.282 5.199 4.263 5 4.263c-2.44 0-4.824 1.634-4.99 3.49Zm10.263 7.912c.088-.027.177-.054.265-.084-.102.032-.204.06-.307.086l.042-.002Z" />
+                                <path d="M10.228 15.667a5.21 5.21 0 0 0 .303-.086l.082-.025a8.019 8.019 0 0 0 4.162-3.3.25.25 0 0 0-.331-.35c-.215.112-.436.21-.663.294a6.367 6.367 0 0 1-2.243.4c-2.957 0-5.532-2.031-5.532-4.644.002-.135.017-.268.046-.399a4.543 4.543 0 0 0-.46 5.898l.003.005c.315.441.707.821 1.158 1.121h.003l.144.09c.877.55 1.721 1.078 3.328.996Z" />
+                            </svg>
+                        </div>
+                        <div class="ms-2 c-details">
+                            <h6 class="mb-0"></h6>
+                        </div>
+                    </div>
+                    <div class="badge"> <span>1 day ago</span> </div>
+                </div>
+
+                <div class="mt-5">
+                    <h3 class="heading d-flex justify-content-between mx-4"><span>Sub-Domain</span> <span class="fw-bold h2" style="color:red">5</span></h3>
+                    <div class="mt-5">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="mt-3"> <span class="text1">42 Tested <span class="text2">of 70 Total</span></span> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 " id="Vulnerability-card">
+            <div class="card p-3 mb-2 domain-card">
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex flex-row align-items-center">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-virus" viewBox="0 0 16 16">
+                                <path d="M8 0a1 1 0 0 1 1 1v1.402c0 .511.677.693.933.25l.7-1.214a1 1 0 0 1 1.733 1l-.701 1.214c-.256.443.24.939.683.683l1.214-.701a1 1 0 0 1 1 1.732l-1.214.701c-.443.256-.262.933.25.933H15a1 1 0 1 1 0 2h-1.402c-.512 0-.693.677-.25.933l1.214.701a1 1 0 1 1-1 1.732l-1.214-.7c-.443-.257-.939.24-.683.682l.701 1.214a1 1 0 1 1-1.732 1l-.701-1.214c-.256-.443-.933-.262-.933.25V15a1 1 0 1 1-2 0v-1.402c0-.512-.677-.693-.933-.25l-.701 1.214a1 1 0 0 1-1.732-1l.7-1.214c.257-.443-.24-.939-.682-.683l-1.214.701a1 1 0 1 1-1-1.732l1.214-.701c.443-.256.261-.933-.25-.933H1a1 1 0 1 1 0-2h1.402c.511 0 .693-.677.25-.933l-1.214-.701a1 1 0 1 1 1-1.732l1.214.701c.443.256.939-.24.683-.683l-.701-1.214a1 1 0 0 1 1.732-1l.701 1.214c.256.443.933.261.933-.25V1a1 1 0 0 1 1-1Zm2 5a1 1 0 1 0-2 0 1 1 0 0 0 2 0ZM6 7a1 1 0 1 0-2 0 1 1 0 0 0 2 0Zm1 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm5-3a1 1 0 1 0-2 0 1 1 0 0 0 2 0Z" />
+                            </svg>
+                        </div>
+                        <div class="ms-2 c-details">
+                            <h6 class="mb-0"></h6>
+                        </div>
+                    </div>
+                    <div class="badge"> <span>1 day ago</span> </div>
+                </div>
+
+                <div class="mt-5">
+                    <h3 class="heading d-flex justify-content-between mx-4"><span>Vulnerability</span> <span id="Vulnerability" class="fw-bold h2" style="color:red"></span></h3>
+
+                    <div class="mt-5">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="mt-3"> <span class="text1">52 Tested <span class="text2">of 100 Total</span></span> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card p-3 mb-2 domain-card">
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex flex-row align-items-center">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="#000" class="bi bi-globe-asia-australia" viewBox="0 0 16 16">
+                                <path d="m10.495 6.92 1.278-.619a.483.483 0 0 0 .126-.782c-.252-.244-.682-.139-.932.107-.23.226-.513.373-.816.53l-.102.054c-.338.178-.264.626.1.736a.476.476 0 0 0 .346-.027ZM7.741 9.808V9.78a.413.413 0 1 1 .783.183l-.22.443a.602.602 0 0 1-.12.167l-.193.185a.36.36 0 1 1-.5-.516l.112-.108a.453.453 0 0 0 .138-.326ZM5.672 12.5l.482.233A.386.386 0 1 0 6.32 12h-.416a.702.702 0 0 1-.419-.139l-.277-.206a.302.302 0 1 0-.298.52l.761.325Z" />
+                                <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0ZM1.612 10.867l.756-1.288a1 1 0 0 1 1.545-.225l1.074 1.005a.986.986 0 0 0 1.36-.011l.038-.037a.882.882 0 0 0 .26-.755c-.075-.548.37-1.033.92-1.099.728-.086 1.587-.324 1.728-.957.086-.386-.114-.83-.361-1.2-.207-.312 0-.8.374-.8.123 0 .24-.055.318-.15l.393-.474c.196-.237.491-.368.797-.403.554-.064 1.407-.277 1.583-.973.098-.391-.192-.634-.484-.88-.254-.212-.51-.426-.515-.741a6.998 6.998 0 0 1 3.425 7.692 1.015 1.015 0 0 0-.087-.063l-.316-.204a1 1 0 0 0-.977-.06l-.169.082a1 1 0 0 1-.741.051l-1.021-.329A1 1 0 0 0 11.205 9h-.165a1 1 0 0 0-.945.674l-.172.499a1 1 0 0 1-.404.514l-.802.518a1 1 0 0 0-.458.84v.455a1 1 0 0 0 1 1h.257a1 1 0 0 1 .542.16l.762.49a.998.998 0 0 0 .283.126 7.001 7.001 0 0 1-9.49-3.409Z" />
+                            </svg>
+                        </div>
+                        <div class="ms-2 c-details">
+                            <h6 class="mb-0"></h6>
+                        </div>
+                    </div>
+                    <div class="badge"> <span>1 days ago</span></div>
+                </div>
+                <div class="mt-3">
+                    <h3 class="heading d-flex justify-content-between mx-4"><span>Ransomware Suspectibility Test</span> <span class="fw-bold h3" style="color:red">22</span></h3>
+                    <div class="mt-4">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: 20%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="mt-3"> <span class="text1">2 Tested <span class="text2">of 50 Total</span></span> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3 mb-2 domain-card">
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex flex-row align-items-center">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-browser-edge" viewBox="0 0 16 16">
+                                <path d="M9.482 9.341c-.069.062-.17.153-.17.309 0 .162.107.325.3.456.877.613 2.521.54 2.592.538h.002c.667 0 1.32-.18 1.894-.519A3.838 3.838 0 0 0 16 6.819c.018-1.316-.44-2.218-.666-2.664l-.04-.08C13.963 1.487 11.106 0 8 0A8 8 0 0 0 .473 5.29C1.488 4.048 3.183 3.262 5 3.262c2.83 0 5.01 1.885 5.01 4.797h-.004v.002c0 .338-.168.832-.487 1.244l.006-.006a.594.594 0 0 1-.043.041Z" />
+                                <path d="M.01 7.753a8.137 8.137 0 0 0 .753 3.641 8 8 0 0 0 6.495 4.564 5.21 5.21 0 0 1-.785-.377h-.01l-.12-.075a5.45 5.45 0 0 1-1.56-1.463A5.543 5.543 0 0 1 6.81 5.8l.01-.004.025-.012c.208-.098.62-.292 1.167-.285.129.001.257.012.384.033a4.037 4.037 0 0 0-.993-.698l-.01-.005C6.348 4.282 5.199 4.263 5 4.263c-2.44 0-4.824 1.634-4.99 3.49Zm10.263 7.912c.088-.027.177-.054.265-.084-.102.032-.204.06-.307.086l.042-.002Z" />
+                                <path d="M10.228 15.667a5.21 5.21 0 0 0 .303-.086l.082-.025a8.019 8.019 0 0 0 4.162-3.3.25.25 0 0 0-.331-.35c-.215.112-.436.21-.663.294a6.367 6.367 0 0 1-2.243.4c-2.957 0-5.532-2.031-5.532-4.644.002-.135.017-.268.046-.399a4.543 4.543 0 0 0-.46 5.898l.003.005c.315.441.707.821 1.158 1.121h.003l.144.09c.877.55 1.721 1.078 3.328.996Z" />
+                            </svg>
+                        </div>
+                        <div class="ms-2 c-details">
+                            <h6 class="mb-0"></h6>
+                        </div>
+                    </div>
+                    <div class="badge"> <span>1 day ago</span> </div>
+                </div>
+
+                <div class="mt-5">
+                    <h3 class="heading d-flex justify-content-between mx-4"><span>Malware Test</span> <span  class="fw-bold h2" style="color:red">2</span></h3>
+                    <div class="mt-5">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="mt-3"> <span class="text1">42 Tested <span class="text2">of 70 Total</span></span> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-3 mb-2 domain-card">
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex flex-row align-items-center">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-virus" viewBox="0 0 16 16">
+                                <path d="M8 0a1 1 0 0 1 1 1v1.402c0 .511.677.693.933.25l.7-1.214a1 1 0 0 1 1.733 1l-.701 1.214c-.256.443.24.939.683.683l1.214-.701a1 1 0 0 1 1 1.732l-1.214.701c-.443.256-.262.933.25.933H15a1 1 0 1 1 0 2h-1.402c-.512 0-.693.677-.25.933l1.214.701a1 1 0 1 1-1 1.732l-1.214-.7c-.443-.257-.939.24-.683.682l.701 1.214a1 1 0 1 1-1.732 1l-.701-1.214c-.256-.443-.933-.262-.933.25V15a1 1 0 1 1-2 0v-1.402c0-.512-.677-.693-.933-.25l-.701 1.214a1 1 0 0 1-1.732-1l.7-1.214c.257-.443-.24-.939-.682-.683l-1.214.701a1 1 0 1 1-1-1.732l1.214-.701c.443-.256.261-.933-.25-.933H1a1 1 0 1 1 0-2h1.402c.511 0 .693-.677.25-.933l-1.214-.701a1 1 0 1 1 1-1.732l1.214.701c.443.256.939-.24.683-.683l-.701-1.214a1 1 0 0 1 1.732-1l.701 1.214c.256.443.933.261.933-.25V1a1 1 0 0 1 1-1Zm2 5a1 1 0 1 0-2 0 1 1 0 0 0 2 0ZM6 7a1 1 0 1 0-2 0 1 1 0 0 0 2 0Zm1 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm5-3a1 1 0 1 0-2 0 1 1 0 0 0 2 0Z" />
+                            </svg>
+                        </div>
+                        <div class="ms-2 c-details">
+                            <h6 class="mb-0"></h6>
+                        </div>
+                    </div>
+                    <div class="badge"> <span>1 day ago</span> </div>
+                </div>
+
+                <div class="mt-5">
+                    <h3 class="heading d-flex justify-content-between mx-4"><span>Related Domains</span> <span   class="fw-bold h2" style="color:red">3</span></h3>
+                    <div class="mt-5">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: 10%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="mt-3"> <span class="text1">52 Tested <span class="text2">of 100 Total</span></span> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section styles{
+  .card {
+    border: none;
+    border-radius: 10px
+    background-color:red;
+}
+
+.c-details span {
+    font-weight: 300;
+    font-size: 13px
+}
+
+.icon {
+    width: 50px;
+    height: 50px;
+    background-color: #eee;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 39px
+}
+
+.badge span {
+    background-color: #fffbec;
+    width: 60px;
+    height: 25px;
+    padding-bottom: 3px;
+    border-radius: 5px;
+    display: flex;
+    color: #fed85d;
+    justify-content: center;
+    align-items: center
+}
+
+.progress {
+    height: 10px;
+    border-radius: 10px
+}
+
+.progress div {
+    background-color: red;
+}
+
+.text1 {
+    font-size: 14px;
+    font-weight: 600
+}
+
+.text2 {
+    color: #a5aec0
+}
+
+.domain-card {
+    transition: transform 0.3s, background-color 0.3s;
+    border:2px solid rgba(255,127,127,0.5);
+    cursor:pointer;
+}
+
+.domain-card:hover {
+    transform: scale(1.05);
+    background-color: #f0f0f0;
+    border:0;
+}
+}
+
+
+    @section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+       <script>
+        var id = @Convert.ToInt32(@Context.Request.HttpContext.Session.GetString("CurrentUser"));
+        var total_threats = 0;
+        var low = 0;
+        var medium= 0;
+        var high= 0;
+
+        $(document).ready(function(){
+            $('#domain-card').click(function () {
+                window.location.replace("/SecurityDashboard/ShowCustomerDomains/" + id);
+            })
+
+            $('#Vulnerability-card').click(function () {
+                window.location.replace("/SecurityDashboard/Vulnerabilities/" + id);
+            })
+
+            $(".domain-card").each(function (index) {
+                var animation = "animate__fadeIn"; 
+                $(this).addClass("animate__animated " + animation).css("animation-delay", index * 0.2 + "s");
+
+                var progressBarAnimation = "animate__slideInLeft"; 
+                $(this).find(".progress-bar").addClass("animate__animated " + progressBarAnimation);
+
+
+                 $("#threat-status").addClass("animate__animated animate__fadeIn");
+                 $("#severityChart").addClass("animate__animated animate__fadeInRight");
+            });
+
+            $.ajax({
+                url: '/Dashboard/DomainCount',
+                type: 'GET',
+                data: { id: id },
+                success: function (response) {
+                    if (response.success) {
+                        $('#domain-count').text(response.count);
+ 
+                    } else {
+                        console.log("Domain not found");
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("Error: " + jqXHR.responseText);
+                }
+            });
+         });
+
+        function fetchData() {
+            return new Promise(function (resolve, reject) {
+                $.ajax({
+                    url: '/charts/ThreatLevel/' + id,
+                    method: 'GET',
+                    success: resolve,
+                    error: reject
+                });
+            });
+        }
+
+        fetchData()
+          .then((data) => {
+                low = data[0];
+                medium = data[1];
+                high = data[2];
+                total_threats = low + medium + high;
+               
+               // Weighted Threat based on Severity
+                const threatLevel = total_threats !== 0
+                    ? ((high * 3 + medium * 2 + low) / (total_threats * 6)) * 100
+                    : 0;
+                
+                const threatInfoElement = $('#threat-info');
+                if (threatLevel > 0) {
+                    if (threatLevel > 70) {
+                        threatInfoElement.text("Your system is at risk! ⚠" + threatLevel).css("color", "red");
+                    } else if (threatLevel >= 30 && threatLevel <= 70) {
+                        threatInfoElement.text("Your system is at medium risk. Proceed with caution. 🚧").css("color", "gold");
+                    } else {
+                        threatInfoElement.text("Your system is in good condition. No significant threat. ✅").css("color", "green");
+                    }
+                } else {
+                    threatInfoElement.text("Data not updated. Please check again later." + data[0]).css("color", "gray");
+                }
+                $('#Vulnerability').text(low + medium +high);
+                var ctx = document.getElementById('severityChart').getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Low', 'Medium', "High"],
+                        datasets: [{
+                            label: 'Severity Ranking',
+                            data: [low ,medium, high],
+                            backgroundColor: [
+                                'rgb(255, 99, 132)',
+                                'rgb(75, 192, 192)',
+                                'rgb(255, 205, 86)',
+                            ]
+                        }]
+                    },
+                    options: {
+                        backdropPadding: {
+                            x: 10,
+                            y: 4
+                        },
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+                });
+            });
+       </script>
+
+    }

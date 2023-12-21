@@ -1,0 +1,392 @@
+﻿@model LP.Models.Customer
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<header class="navbar sticky bg-dark justify-content-between d-flex align-content-center p-0 shadow" style="z-index:1" data-bs-theme="dark">
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">Company:   INVIA</a>
+
+    <div type="button" class="icon-button" id="showEnquires">
+        <span class="material-icons">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
+                <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z" />
+            </svg>
+        </span>
+        <span id="Active-enquiry-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill">
+          
+        </span>
+    </div>
+   
+</header>
+
+@*scroll to top button START*@
+<div class="fixed-bottom m-4">
+    <button id="scrollToTop" class="btn btn-primary">Scroll to Top</button>
+</div>
+@*scroll to top button END*@
+
+<div class="container py-3">
+    <div class="d-flex flex-column gap-2">
+        <div class="chart-row">
+            <div class="chart-container chart-half-width">
+                <canvas id="myChart-1"></canvas>
+                <div class="chart-label">Customers</div>
+            </div>
+            <div class="chart-gap"></div> 
+            <div class="chart-container chart-half-width">
+                <canvas id="myChart-2"></canvas>
+                <div class="chart-label">Customer Retention</div>
+            </div>
+            <div class="chart-gap"></div> 
+            <div class="chart-container chart-half-width">
+                <canvas id="myChart-3"></canvas>
+                <div class="chart-label">Most Valuable Plan</div>
+            </div>
+        </div>
+    </div>
+        <button class="btn my-2 btn-outline-info open-modal" >Add Customer</button>
+ </div>
+   <div class="container my-3">
+    <table id="customerTable" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+                <tr>
+                    <th  scope="col">Id</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Current Plan</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+        </table>
+   </div>
+
+   @*Add New Customer Modal Start*@
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content p-4">
+            <div class="container mt-4">
+                <h2 class="purple-text mb-4">Add New Customer</h2>
+                <form asp-action="AddCustomer" asp-controller="Dashboard" method="post" id="customerForm">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="F_Name"></label>
+                                <input id="F_Name" asp-for="F_Name" class="form-control" autocomplete="off"/>
+                                <span asp-validation-for="F_Name" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="L_Name"></label>
+                                <input id="L_Name" asp-for="L_Name" class="form-control" autocomplete="off" />
+                                <span asp-validation-for="L_Name" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label asp-for="Email"></label>
+                            <input id="Email" asp-for="Email" class="form-control" autocomplete="off" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-6">
+                            <label asp-for="Organisation"></label>
+                            <input id="Organisation" asp-for="Organisation" class="form-control" autocomplete="off" />
+                            <span asp-validation-for="Organisation" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Address"></label>
+                        <textarea id="Address" asp-for="Address" class="form-control" autocomplete="off"></textarea>
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CurrentPlan"></label>
+                        <select asp-for="CurrentPlan" id="CurrentPlan" asp-items="Html.GetEnumSelectList<LP.Models.PlanType>()" class="form-control" autocomplete="off">
+                            <option value="">Select a Plan</option>
+                        </select>
+                        <span asp-validation-for="CurrentPlan" class="text-danger"></span>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label asp-for="City"></label>
+                            <select asp-for="City" id="City" asp-items="Html.GetEnumSelectList<LP.Models.City>()" class="form-control" autocomplete="off">
+                                <option value="">Select a City</option>
+                            </select>
+                            <span asp-validation-for="City" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-6">
+                            <label asp-for="Country"></label>
+                            <select asp-for="Country" id="Country" asp-items="Html.GetEnumSelectList<LP.Models.Country>()" class="form-control" autocomplete="off">
+                                <option value="">Select a Country</option>
+                                <span asp-validation-for="Country" class="text-danger"></span>
+                            </select>
+                        </div>
+                    </div>
+                    <input asp-for="TransactionId" id="TransactionId" type="hidden" />
+                    <input asp-for="PlanId" id="PlanId" type="hidden" />
+                    <input asp-for="Created_Date" id="Created_Date" type="hidden" />
+                    <button type="submit" class="btn btn-primary btn-block">Create Customer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+   @*Add New Customer Modal End*@
+
+
+@section Styles{
+
+    .chart-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .chart-container {
+        margin: 0 10px;
+        text-align: center;
+        padding: 10px;
+        border: 1px solid #ccc;
+    }
+
+    .chart-full-width {
+        flex: 1;
+    }
+
+    .chart-half-width {
+        flex: 0.5;
+    }
+
+    .chart-gap {
+        flex: 0.1;
+    }
+
+    .chart-label {
+        margin-top: 10px;
+    }
+
+    .icon-button {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 25px;
+        height: 25px;
+        color: #333333;
+        background: #dddddd;
+        border: none;
+        outline: none;
+        margin: 0px 50px;
+        border-radius: 50%;
+    }
+
+        .icon-button:hover {
+            cursor: pointer;
+        }
+
+        .icon-button:active {
+            background: #cccccc;
+        }
+
+    .icon-button-badge {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        width: 25px;
+        height: 25px;
+        background: red;
+        color: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+    }
+
+        icon-button-badge-animations{
+           animation: blink 2s 1s linear infinite;
+        }
+
+    @@keyframes blink {
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+  .purple-text {
+            color: purple;
+        }
+
+        .MyContainer {
+            max-width: 650px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            background-color: purple;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #6a1b9a;
+        }
+
+.modal-content {
+    transform: translateY(-100%);
+    transition: transform 0.3s ease-in-out;
+}
+/* Active state, on the screen */
+.modal.show .modal-content {
+    transform: translateY(0);
+}
+
+}
+
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+   <script src="~/js/CustomerChart.js"></script>
+   <script src="~/js/RetentionRateChart.js"></script>
+   <script src="~/js/MVPChart .js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#scrollToTop').fadeOut();
+
+            $(document).on('click', '.view-button', function () {
+                var customerId = $(this).data('customer-id');
+                window.location.href = '/Customer/ShowCustomerData/' + customerId;
+            });
+
+            $(document).on('click', '.delete-button', function () {
+                var customerId = $(this).data('customer-id');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/Dashboard/DeleteCustomer', 
+                    data: { id: customerId },
+                    success: function (response) {
+                      
+                    },
+                    error: function (error) {
+                        console.error('Error deleting customer: ' + JSON.stringify(error));
+                    }
+                });
+            });
+
+            $(document).on('click', '.disable-button', function () {
+                var customerId = $(this).data('customer-id');
+                $.ajax({
+                    type: 'POST',
+                    url: '/Dashboard/DisableUser', 
+                    data: { id: customerId },
+                    success: function (response) {
+                        
+                    },
+                    error: function (error) {
+                        console.error('Error disabling user: ' + JSON.stringify(error));
+                    }
+                });
+            });
+
+            $(document).on('click', '#showEnquires', function () {
+                window.location.href = '/Dashboard/Enquires';
+            });
+
+
+            $(window).scroll(function () {
+                if ($(this).scrollTop() > 100) {
+                    $('#scrollToTop').fadeIn();
+                } else {
+                    $('#scrollToTop').fadeOut();
+                }
+            });
+
+            $('#scrollToTop').click(function () {
+                $('html, body').animate({ scrollTop: 0 },100);
+                return false;
+            });
+
+            $('.open-modal').click(function () {
+                $('#myModal').modal('show');
+            });
+ 
+            $('#myModal').on('click', function (e) {
+                if ($(e.target).is('.modal')) {
+                    $('#myModal').modal('hide');
+                }
+            });
+
+          $.ajax({
+                type: "GET",
+                url: "/Dashboard/ActiveEnquires", 
+                success: function (data) {
+                    if (data.success) {
+                        $('#Active-enquiry-count').text(data.unresolvedInquiries);
+
+                    if (data.unresolvedInquiries === 0) {
+                        $('#Active-enquiry-count').css('background-color', 'green');
+                        
+                    }
+                    else {
+                        $('#Active-enquiry-count').css('background-color', 'red').addClass('icon-button-badge-animations');
+                    }    
+                } 
+                else {
+                        console.error("Error: " + data.message);
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.error("AJAX Error: " + errorThrown);
+                }
+          });
+        });
+
+       
+        $('#customerTable').DataTable({
+            "ajax": {
+                "url": "/Customer/GetAll",
+                "dataSrc": ""
+            },
+            "columns": [
+                { "data": "id" },
+                { "data": "first_Name" },
+                { "data": "last_Name" },
+                {
+                    "data": "current_Plan",
+                    "render": function (data, type, row) {
+                      
+                        return data === 1 ? "Basic Plan" :
+                            data === 2 ? "Standard Plan" :
+                                data === 3 ? "Premium Plan" :
+                                    "No Plan";
+                    }
+                },
+                {
+                    "data": "id",
+                    "render": function (data, type, row) {
+                        var CTA = '<button class="view-button btn btn-primary" data-customer-id="' + data + '">View</button >'+
+                        '<button class="mx-1 delete-button text-black fw-bold btn btn-secondary" data-customer-id="' + data + '">Delete</button>'+
+                        '<button class="mx-2 disable-button btn btn-info fw-bold" data-customer-id="' + data + '">Disable</button>';
+                        return CTA;
+                    }
+                }
+            ],
+            "paging": true,
+            "lengthMenu": [10, 15, 20, 25]
+        });
+
+    </script>
+
+}

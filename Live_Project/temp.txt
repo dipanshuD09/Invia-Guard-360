@@ -1,0 +1,162 @@
+In an ASP.NET Core application, you can add the partial view I provided to one of your Razor views. Here are the steps to add the partial view to a Razor view in ASP.NET Core:
+
+1. Create the Partial View:
+
+   - Save the HTML code I provided in a new Razor partial view file (e.g., _ThreatSummary.cshtml). Place this file in your "Views" folder within a subfolder that corresponds to your controller or in the "Shared" folder if it's intended to be used across multiple views.
+
+2. Add the Partial View to Your Razor View:
+
+   - Open the Razor view where you want to include the partial view (e.g., Index.cshtml).
+
+   - To include the partial view, you can use the @Html.Partial or @Html.PartialAsync helper method. Add the following code where you want to include the partial view:
+
+     html
+     @Html.Partial("_ThreatSummary", Model)
+     
+
+   - Here, _ThreatSummary is the name of the partial view file (without the file extension), and Model should be replaced with the appropriate model you want to pass to the partial view. Make sure the model you pass matches the expected model type in the partial view.
+
+3. Pass Data to the Partial View:
+
+   - Ensure that the model you pass to the partial view (Model in the code above) is populated with the necessary data, such as the threat counts and severity scores.
+
+4. Render the View:
+
+   - Render your Razor view as usual, and the partial view will be included in the output.
+
+That's it! The partial view should now be included in your main Razor view, and it will display the doughnut chart and severity index column as described in the original code.
+
+Remember to adjust the model data you pass to the partial view to match your application's specific requirements and data structure.
+
+
+
+
+--------------------------------------------------------------------------
+
+
+CREATE PROCEDURE GetVulnerabilityCounts()
+BEGIN
+  DECLARE low_count INT;
+  DECLARE medium_count INT;
+  DECLARE high_count INT;
+
+  -- Initialize counts to zero
+  SET low_count = 0;
+  SET medium_count = 0;
+  SET high_count = 0;
+
+  -- Loop through the vulnerability table and categorize entries by threat level
+  DECLARE done INT DEFAULT 0;
+  DECLARE cur CURSOR FOR SELECT threat_level FROM vulnerability;
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+  OPEN cur;
+
+  read_loop: LOOP
+    FETCH cur INTO @threat_level;
+
+    IF done THEN
+      LEAVE read_loop;
+    END IF;
+
+    IF @threat_level BETWEEN 1 AND 3 THEN
+      SET low_count = low_count + 1;
+    ELSEIF @threat_level BETWEEN 4 AND 6 THEN
+      SET medium_count = medium_count + 1;
+    ELSEIF @threat_level BETWEEN 7 AND 10 THEN
+      SET high_count = high_count + 1;
+    END IF;
+  END LOOP;
+
+  CLOSE cur;
+
+  -- Return the counts
+  SELECT 'Low' AS Threat_Level, low_count AS Count
+  UNION
+  SELECT 'Medium' AS Threat_Level, medium_count AS Count
+  UNION
+  SELECT 'High' AS Threat_Level, high_count AS Count;
+END //
+
+
+-------------------------------------------------------------------------
+
+
+Creating a partial view in ASP.NET with a Chart.js doughnut chart on the left and a severity index column on the right, where the text changes color based on a ranking, can be achieved using HTML, JavaScript, and CSS. Here's a simplified example of how you can structure this partial view:
+
+html
+@model YourModelType
+
+<div class="row">
+    <div class="col-md-6">
+        <canvas id="doughnutChart" width="200" height="200"></canvas>
+    </div>
+    <div class="col-md-6">
+        <ul class="severity-list">
+            <li>
+                <span class="severity-text" style="color: @GetSeverityColor(Model.SeverityScore1)">
+                    Severity 1: @Model.SeverityScore1
+                </span>
+            </li>
+            <li>
+                <span class="severity-text" style="color: @GetSeverityColor(Model.SeverityScore2)">
+                    Severity 2: @Model.SeverityScore2
+                </span>
+            </li>
+            <!-- Add more severity items as needed -->
+        </ul>
+    </div>
+</div>
+
+<script>
+    // JavaScript code to create the Chart.js doughnut chart
+    var doughnutChart = new Chart(document.getElementById("doughnutChart").getContext("2d"), {
+        type: "doughnut",
+        data: {
+            labels: ["Low Threats", "Medium Threats", "High Threats"],
+            datasets: [{
+                data: [@Model.LowThreatCount, @Model.MediumThreatCount, @Model.HighThreatCount],
+                backgroundColor: ["green", "yellow", "red"]
+            }]
+        },
+        options: {
+            cutout: "70%",
+            responsive: true
+        }
+    });
+
+    // Function to get the color based on the severity ranking
+    function GetSeverityColor(severity) {
+        if (severity >= 7) {
+            return "red";
+        } else if (severity >= 4) {
+            return "yellow";
+        } else {
+            return "green";
+        }
+    }
+</script>
+
+<style>
+    .severity-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .severity-text {
+        font-weight: bold;
+    }
+</style>
+
+
+In this code:
+
+1. Replace YourModelType with the actual type of your model containing data for the doughnut chart and severity scores.
+
+2. On the left side, there's a doughnut chart created using Chart.js with three segments representing low, medium, and high threat counts. The colors of the segments are set to green, yellow, and red, respectively.
+
+3. On the right side, a list of severity items is displayed. The GetSeverityColor JavaScript function is used to determine the text color based on the severity score. You can adjust the color thresholds in this function according to your specific ranking criteria.
+
+4. The CSS styles define the appearance of the severity list.
+
+Make sure to integrate this partial view into your ASP.NET project and pass the relevant data through the model to populate the chart and severity scores. Additionally, include the Chart.js library in your project to render the doughnut chart.

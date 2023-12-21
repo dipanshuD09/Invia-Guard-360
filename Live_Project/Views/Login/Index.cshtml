@@ -1,0 +1,54 @@
+@model LP.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+    
+<div class="container col-xl-10 col-xxl-8 px-4 py-1">
+    <div class="row align-items-center g-lg-5 py-5">
+        <div class="col-lg-7 text-center text-lg-start">
+            <h1 class="display-4 fw-bold lh-1 mb-3">Welcome to <span style="color:#BA55D3">Invia Guard</span></h1>
+            <p class="col-lg-10 fs-4">
+              Please enter your credentials to access Invia Guard 360, your gateway to seamless B2B Security and System Testing. 
+              Elevate your business to new heights with secure and efficient login. 
+              If you're new here, join our network of possibilities.
+            </p>
+        </div>
+        <div class="col-md-10 mx-auto col-lg-5">
+            <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" asp-action="Index" asp-controller="Login">
+                <div class="form-floating mb-3">
+                    <input asp-for="Username" class="form-control" id="Username" placeholder="Username">
+                    <label asp-for="Username">Username</label>
+                    <span class="text-danger" asp-validation-for="Username"></span>
+                </div>
+                <div class="form-floating mb-3" id="password-column">
+                    <input asp-for="Password" type="password" class="form-control" id="Password" placeholder="Password">
+                    <label asp-for="Password">Password</label>
+                    <span class="text-danger" asp-validation-for="Password"></span>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg px-4 me-md-2">Login</button>
+                <hr class="my-4">
+                <small class="text-muted">By Login, you agree to the terms of use.</small>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $(".display-4").addClass("animate__animated animate__fadeIn animate__fast");
+
+            $(".fs-4").addClass("animate__animated animate__fadeInUp animate__fast");
+
+            $("form").addClass("animate__animated animate__fadeInRight animate__fast");
+
+            $(".form-floating").addClass("animate__animated animate__fadeInRight animate__fast");
+
+            $("button").addClass("animate__animated animate__fadeInUpBig animate__fast animate__bounce");
+
+            $("hr").addClass("animate__animated animate__fadeIn animate__fast animate__delay-2s");
+
+            $(".text-muted").addClass("animate__animated animate__fadeIn animate__fast animate__delay-2s");
+        });
+    </script>
+}
